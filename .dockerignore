@@ -1,0 +1,8 @@
+.git
+dist
+flutter
+web/node_modules
+web/test-results
+web/playwright-report
+*.db*
+*.exe

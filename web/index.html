@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Box View</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+ <header><h1>Box View</h1><span>Explainable software models</span></header>
+ <nav aria-label="View controls">
+  <label>Revision <input id="revision" type="number" min="0" placeholder="latest"></label>
+  <label>Relationship lens <select id="lens"><option value="">All</option><option>calls</option><option>writes</option><option>reads</option><option>depends_on</option></select></label>
+  <label>Target <input id="target" placeholder="all targets"></label>
+  <label>Max boxes per row <input id="max-per-row" type="number" min="1" max="12" placeholder="server default"></label>
+  <label>API token <input id="token" type="password" autocomplete="off"></label>
+  <button id="refresh">Refresh</button><button id="diff">Changes from previous revision</button>
+ </nav>
+ <p id="status" role="status" aria-live="polite">Loading…</p>
+ <main><box-view></box-view><aside aria-label="Inspector"><h2>Inspector</h2><pre id="inspector">Select a component or relationship.</pre></aside></main>
+ <details><summary>Query the model</summary>
+  <form id="query-form"><label>Operation <select id="kind"><option>boundary</option><option>children</option><option>descendants</option><option>neighbours</option><option>paths</option><option>unresolved</option></select></label><label>Entity ID <input id="entity" required value="storage"></label><label>Destination ID (paths) <input id="to" value="db"></label><button>Query</button></form>
+ </details>
+ <details><summary>Apply an atomic patch</summary><p>Use the current revision as expectedRevision. Updates keep the same identity.</p><textarea id="patch" rows="12" spellcheck="false" aria-label="JSON patch"></textarea><button id="apply">Apply patch</button></details>
+ <details><summary>Box appearance</summary><p>Colours use #RRGGBB. Spans use row columns and shrink on narrow screens. These settings belong to this view.</p><textarea id="appearance" rows="7" spellcheck="false" aria-label="View appearance JSON">{"styles":{}}</textarea><button id="appearance-apply">Update appearance</button></details>
+ <script type="module" src="/app.js"></script>
+</body></html>

@@ -1,0 +1,62 @@
+name: CI
+on: [push, pull_request, workflow_call]
+permissions:
+  contents: read
+jobs:
+  go:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+      - run: go test ./...
+      - run: go vet ./...
+      - run: go build ./cmd/box-view
+      - if: runner.os == 'Linux'
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
+      - if: runner.os == 'Linux'
+        run: go test -race ./...
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+        working-directory: web
+      - run: node --test web/adapter.test.js
+      - run: npx playwright install --with-deps chromium
+        working-directory: web
+      - run: npx playwright test
+        working-directory: web
+  flutter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+        working-directory: flutter
+      - run: flutter analyze
+        working-directory: flutter
+      - run: flutter test
+        working-directory: flutter
+      - run: flutter test
+        working-directory: flutter/example
+      - run: flutter build web
+        working-directory: flutter/example
+      - run: flutter pub publish --dry-run
+        working-directory: flutter

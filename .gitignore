@@ -1,0 +1,12 @@
+*.db
+*.db-shm
+*.db-wal
+*.exe
+/dist/
+**/.dart_tool/
+**/build/
+**/.flutter-plugins-dependencies
+**/coverage/
+node_modules/
+**/test-results/
+**/playwright-report/
